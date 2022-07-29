@@ -1,1 +1,1 @@
-web: gunicorn hairy:app
+web: gunicorn server:app
