@@ -23,6 +23,11 @@ class Game:
         self.last_ping = [5, 5]
         self.id = roomName
 
+        print()
+        print("GAME STARTED")
+        print(self.id)
+        print(self.players)
+
         self.match_on = False
 
         self.gridSize = (800, 400)
@@ -37,9 +42,13 @@ class Game:
     def join_player_2(self, plr):
         self.players.append(plr)
         self.match_on = True
+        print()
+        print("2ND PLAYER JOINED")
+        print(self.id)
+        print(self.players)
 
     def ping(self, plr, pingInfo):
-        if "leave" not in pingInfo.keys:
+        if "leave" in pingInfo.keys():
             plrIndex = self.players.index(plr)
             if plrIndex == 1:
                 self.players.remove(plr)
@@ -55,7 +64,9 @@ class Game:
                 self.pongBall = (self.gridSize[0] / 2, self.gridSize[1] / 2, self.ballSpeed, 0)
                 self.playerPoses = [self.gridSize[1] / 2, self.gridSize[1] / 2]
                 self.score = [0, 0]
+            return "left"
         else:
+            print("br")
             if self.match_on:
                 newPos = pingInfo['plrPos']
                 plrIndex = self.players.index(plr)
@@ -74,6 +85,7 @@ class Game:
                 return "not started"
 
     def endGame(self):
+        print("game ended: "+self.id)
         currentGames.remove(self)
         del self
 
@@ -128,13 +140,13 @@ class Game:
                 sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
 
             self.pongBall = (x2, y2, sX, sY)
-            
+
             self.last_ping[0] -= deltaTime
             self.last_ping[1] -= deltaTime
             if self.last_ping[0] <= 0 or self.last_ping[1] <= 0:
                 self.endGame()
         if self.time <= 0:
-                self.endGame()
+            self.endGame()
 
 
 @app.route("/ping-susi/")
@@ -152,6 +164,8 @@ def api():
             return "no roomname specified, dirty cheater"
     elif requestType == "ping":
         for game in currentGames:
+            print(game.players)
+            print(ip)
             if game.players.count(ip) > 0:
                 return game.ping(ip, dict(flask.request.args))
         return "match ended"
