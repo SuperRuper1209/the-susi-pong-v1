@@ -188,7 +188,9 @@ def api():
 
 tps = 60
 
+
 def loop():
+    print("app run")
     app.run(debug=True, use_reloader=False, port=80)
 
 
@@ -196,6 +198,7 @@ def loop():
 if __name__ == "__main__":
     threading.Thread(target=loop, args=()).start()
     while 1:
+        print("While")
         prevTime = time.time()
         time.sleep(1/tps)
         deltaTime = time.time()-prevTime
