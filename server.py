@@ -197,7 +197,6 @@ def loop():
 
 threading.Thread(target=loop, args=()).start()
 while 1:
-    print("While")
     prevTime = time.time()
     time.sleep(1/tps)
     deltaTime = time.time()-prevTime
