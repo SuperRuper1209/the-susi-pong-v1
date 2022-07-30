@@ -190,15 +190,15 @@ tps = 60
 
 
 def loop():
-    print("app run")
-    app.run(debug=True, use_reloader=False, port=80)
-
-
+    print("while loop")
+    while 1:
+        prevTime = time.time()
+        time.sleep(1 / tps)
+        deltaTime = time.time() - prevTime
+        for game in currentGames:
+            game.tick(deltaTime)
+    
 
 threading.Thread(target=loop, args=()).start()
-while 1:
-    prevTime = time.time()
-    time.sleep(1/tps)
-    deltaTime = time.time()-prevTime
-    for game in currentGames:
-        game.tick(deltaTime)
+print("app run")
+app.run(debug=True, use_reloader=False)
