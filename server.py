@@ -195,12 +195,11 @@ def loop():
 
 
 
-if __name__ == "__main__":
-    threading.Thread(target=loop, args=()).start()
-    while 1:
-        print("While")
-        prevTime = time.time()
-        time.sleep(1/tps)
-        deltaTime = time.time()-prevTime
-        for game in currentGames:
-            game.tick(deltaTime)
+threading.Thread(target=loop, args=()).start()
+while 1:
+    print("While")
+    prevTime = time.time()
+    time.sleep(1/tps)
+    deltaTime = time.time()-prevTime
+    for game in currentGames:
+        game.tick(deltaTime)
