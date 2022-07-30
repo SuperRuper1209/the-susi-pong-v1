@@ -78,6 +78,7 @@ class Game:
         del self
 
     def tick(self, deltaTime):
+        self.time -= deltaTime
         if not self.match_on:
             self.last_ping[0] -= deltaTime
             if self.last_ping[0] < 0:
@@ -127,11 +128,12 @@ class Game:
                 sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
 
             self.pongBall = (x2, y2, sX, sY)
-
-            self.time -= deltaTime
+            
             self.last_ping[0] -= deltaTime
             self.last_ping[1] -= deltaTime
-            if self.time <= 0 or self.last_ping[0] <= 0 or self.last_ping[1] <= 0:
+            if self.last_ping[0] <= 0 or self.last_ping[1] <= 0:
+                self.endGame()
+        if self.time <= 0:
                 self.endGame()
 
 
