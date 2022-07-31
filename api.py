@@ -1,11 +1,12 @@
-import multiprocessing
 import flask
 import uuid
-from rq import Queue
-from worker import conn
 import server
+from apscheduler.schedulers.blocking import BlockingScheduler
+import threading
 
-q = Queue(connection=conn)
+
+sched = BlockingScheduler()
+
 
 app = flask.Flask(__name__)
 
@@ -43,15 +44,11 @@ def api():
     return "bruh, can you just not?"
 
 
-def susi():
-    while 1:
-        print("mogus")
-
-
-@app.before_first_request
+@sched.scheduled_job('interval', seconds=1/server.tps)
 def loop():
-    q.enqueue(susi, ())
+    server.tick()
 
 
 if __name__ == "__main__":
+    threading.Thread(target=sched.start, args=()).start()
     app.run(debug=True, use_reloader=False, threaded=True)

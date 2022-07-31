@@ -163,15 +163,19 @@ def ping(uuid2, args):
     return "match ended"
 
 
-def loop():
-    tps = 1
-    print("loop started")
-    while 1:
-        prevTime = time.time()
-        time.sleep(1 / tps)
-        deltaTime = time.time() - prevTime
-        for game in currentGames:
-            game.tick(deltaTime)
+prevTime = time.time()
+
+
+tps = 1
+
+
+def tick():
+    global prevTime
+    global currentGames
+    deltaTime = time.time() - prevTime
+    for game in currentGames:
+        game.tick(deltaTime)
+    prevTime = time.time()
 
 
 def addGame(uuid2, roomName):
