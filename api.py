@@ -43,9 +43,14 @@ def api():
     return "bruh, can you just not?"
 
 
+def susi():
+    while 1:
+        print("mogus")
+
+
 @app.before_first_request
 def loop():
-    q.enqueue(server.loop, ())
+    q.enqueue(susi, ())
 
 
 if __name__ == "__main__":
