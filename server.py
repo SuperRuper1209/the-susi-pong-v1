@@ -3,6 +3,7 @@ import math
 import random
 import json
 import uuid
+import redis
 
 currentGames = []
 addGame = None
@@ -141,28 +142,6 @@ class Game:
             self.endGame()
 
 
-def loop():
-    global addGame
-    global currentGames
-    tps = 1
-    print("loop started")
-    while 1:
-        print("loop works")
-        if addGame is not None:
-            print(addGame)
-            print(addGame.players)
-            print(addGame.roomName)
-            currentGames.append(addGame)
-            print(currentGames)
-            addGame = None
-
-        prevTime = time.time()
-        time.sleep(1 / tps)
-        deltaTime = time.time() - prevTime
-        for game in currentGames:
-            game.tick(deltaTime)
-
-
 def joinGame(args):
     for game in currentGames:
         if game.id == args.get("roomName"):
@@ -180,3 +159,25 @@ def ping(uuid2, args):
         if game.players.count(uuid2) > 0:
             return game.ping(uuid2, dict(args))
     return "match ended"
+
+
+def loop():
+    global currentGames
+    global addGame
+    tps = 1
+    print("loop started")
+    while 1:
+        print("loop works")
+        if addGame is not None:
+            print(addGame)
+            print(addGame.players)
+            print(addGame.roomName)
+            currentGames.append(addGame)
+            print(currentGames)
+            addGame = None
+
+        prevTime = time.time()
+        time.sleep(1 / tps)
+        deltaTime = time.time() - prevTime
+        for game in currentGames:
+            game.tick(deltaTime)

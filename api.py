@@ -1,8 +1,10 @@
 import flask
 import uuid
 import server
-import threading
-from multiprocessing import Process, Value
+from rq import Queue
+from worker import conn
+
+q = Queue(connection=conn)
 
 app = flask.Flask(__name__)
 
@@ -43,6 +45,5 @@ def api():
 
 if __name__ == "__main__":
     print("app run")
-    p = Process(target=server.loop, args=())
-    p.start()
+    q.enqueue(server.loop, ())
     app.run(debug=True, use_reloader=False, threaded=True)
