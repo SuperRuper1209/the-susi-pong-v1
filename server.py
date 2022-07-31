@@ -4,6 +4,7 @@ import time
 import math
 import random
 import json
+import uuid
 
 app = flask.Flask(__name__)
 
@@ -154,36 +155,38 @@ class Game:
 
 @app.route("/ping-susi/")
 def api():
+    uuid2 = flask.request.args.get("uuid")
     requestType = flask.request.args.get("type")
     if flask.request.headers.getlist("X-Forwarded-For"):
         ip = flask.request.headers.getlist("X-Forwarded-For")[0]
     else:
         ip = flask.request.remote_addr
     if requestType == "newGame":
-        for game in currentGames:
-            if game.players.count(ip) > 0:
-                return "bruh cheater, kys"
         if flask.request.args.get("roomName"):
-            currentGames.append(Game(ip, flask.request.args.get("roomName")))
-            return "success"
+            uuid2 = str(uuid.uuid4())
+            currentGames.append(Game(uuid2, flask.request.args.get("roomName")))
+            return uuid2
         else:
             return "no roomname specified, dirty cheater"
     elif requestType == "ping":
-        for game in currentGames:
-            print(game.players)
-            print(ip)
-            if game.players.count(ip) > 0:
-                return game.ping(ip, dict(flask.request.args))
-        return "match ended"
+        if uuid2:
+            for game in currentGames:
+                print()
+                print(game.players)
+                print(uuid2)
+                print(ip)
+                if game.players.count(uuid2) > 0:
+                    return game.ping(uuid2, dict(flask.request.args))
+            return "match ended"
+        else:
+            return "stop hacking my game, is it so hard to???"
     elif requestType == "joinGame":
-        for game in currentGames:
-            if game.players.count(ip) > 0:
-                return "bruh cheater, stop trying breaking my game, dud, literally why"
         for game in currentGames:
             if game.id == flask.request.args.get("roomName"):
                 if len(game.players) == 1:
-                    game.join_player_2(flask.request.remote_addr)
-                    return "success"
+                    uuid2 = str(uuid.uuid4())
+                    game.join_player_2(uuid2)
+                    return uuid2
                 else:
                     return "too much players"
     return "bruh, can you just not?"
