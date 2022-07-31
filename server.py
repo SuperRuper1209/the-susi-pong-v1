@@ -1,18 +1,8 @@
-import flask
-import threading
 import time
 import math
 import random
 import json
-import uuid
-
-app = flask.Flask(__name__)
-
-
-@app.route('/')
-def index():
-    return flask.render_template('index.html')
-
+import threading
 
 currentGames = []
 
@@ -150,54 +140,8 @@ class Game:
             self.endGame()
 
 
-@app.route("/ping-susi/")
-def api():
-    global currentGames
-
-    uuid2 = flask.request.args.get("uuid")
-    requestType = flask.request.args.get("type")
-    if flask.request.headers.getlist("X-Forwarded-For"):
-        ip = flask.request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        ip = flask.request.remote_addr
-    if requestType == "newGame":
-        if flask.request.args.get("roomName"):
-            uuid2 = str(uuid.uuid4())
-            currentGames.append(Game(uuid2, flask.request.args.get("roomName")))
-            return uuid2
-        else:
-            return "no roomname specified, dirty cheater"
-    elif requestType == "ping":
-        if uuid2:
-            print()
-            print(currentGames)
-            print(uuid2)
-            print(ip)
-            for game in currentGames:
-                print(game.players)
-                if game.players.count(uuid2) > 0:
-                    return game.ping(uuid2, dict(flask.request.args))
-            return "match ended"
-        else:
-            return "stop hacking my game, is it so hard to???"
-    elif requestType == "joinGame":
-        for game in currentGames:
-            if game.id == flask.request.args.get("roomName"):
-                if len(game.players) == 1:
-                    uuid2 = str(uuid.uuid4())
-                    game.join_player_2(uuid2)
-                    return uuid2
-                else:
-                    return "too much players"
-    return "bruh, can you just not?"
-
-
-tps = 1
-
-
 def loop():
-    global tps
-    global currentGames
+    tps = 1
     print("loop started")
     while 1:
         print()
@@ -209,11 +153,4 @@ def loop():
             game.tick(deltaTime)
 
 
-@app.before_first_request
-def loopStart():
-    threading.Thread(target=loop, args=()).start()
-
-
-if __name__ == "__main__":
-    print("app run")
-    app.run(debug=True, use_reloader=False)
+threading.Thread(target=loop, args=()).start()
