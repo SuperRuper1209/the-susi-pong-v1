@@ -155,7 +155,10 @@ class Game:
 @app.route("/ping-susi/")
 def api():
     requestType = flask.request.args.get("type")
-    ip = flask.request.remote_addr
+    if flask.request.headers.getlist("X-Forwarded-For"):
+        ip = flask.request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = flask.request.remote_addr
     if requestType == "newGame":
         for game in currentGames:
             if game.players.count(ip) > 0:
