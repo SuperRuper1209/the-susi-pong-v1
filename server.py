@@ -148,11 +148,13 @@ def loop():
     print("loop started")
     while 1:
         if addGame is not None:
+            print(addGame)
+            print(addGame.players)
+            print(addGame.roomName)
             currentGames.append(addGame)
+            print(currentGames)
             addGame = None
 
-        print()
-        print(currentGames)
         prevTime = time.time()
         time.sleep(1 / tps)
         deltaTime = time.time() - prevTime
