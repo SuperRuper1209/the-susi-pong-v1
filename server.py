@@ -3,7 +3,6 @@ import math
 import random
 import json
 import uuid
-import redis
 
 currentGames = []
 addGame = None
