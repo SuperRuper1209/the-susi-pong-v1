@@ -152,6 +152,7 @@ class Game:
 
 @app.route("/ping-susi/")
 def api():
+    global currentGames
     uuid2 = flask.request.args.get("uuid")
     requestType = flask.request.args.get("type")
     if flask.request.headers.getlist("X-Forwarded-For"):
@@ -194,6 +195,8 @@ tps = 60
 
 
 def loop():
+    global tps
+    global currentGames
     while 1:
         prevTime = time.time()
         time.sleep(1 / tps)
