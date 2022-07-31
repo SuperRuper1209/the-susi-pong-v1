@@ -93,9 +93,6 @@ class Game:
     def tick(self, deltaTime):
         self.time -= deltaTime
         if not self.match_on:
-            print()
-            print("ping")
-            print(self.last_ping)
             self.last_ping[0] -= deltaTime
             if self.last_ping[0] < 0:
                 self.endGame()
