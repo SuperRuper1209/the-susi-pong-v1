@@ -2,7 +2,11 @@ import multiprocessing
 import flask
 import uuid
 import os
-
+import socket
+hostname=socket.gethostname()
+IPAddr=socket.gethostbyname(hostname)
+print(IPAddr)
+print(hostname)
 
 print(os.environ)
 
