@@ -1,7 +1,11 @@
 import multiprocessing
 import flask
 import uuid
-import server
+import os
+
+
+print(os.environ)
+
 
 app = flask.Flask(__name__)
 
@@ -22,24 +26,24 @@ def api():
     if requestType == "newGame":
         if flask.request.args.get("roomName"):
             uuid2 = str(uuid.uuid4())
-            server.addGame = server.Game(uuid2, flask.request.args.get("roomName"))
+            changeAddGame(uuid2, flask.request.args.get("roomName"))
             return uuid2
         else:
             return "no roomname specified, dirty cheater"
     elif requestType == "ping":
         if uuid2:
             print()
-            print(server.currentGames)
+            print(currentGames)
             print(uuid2)
             print(ip)
-            return server.ping(uuid2, flask.request.args)
+            return ping(uuid2, flask.request.args)
         else:
             return "stop hacking my game, is it so hard to???"
     elif requestType == "joinGame":
-        return server.joinGame(flask.request.args)
+        return joinGame(flask.request.args)
     return "bruh, can you just not?"
 
 
 if __name__ == "__main__":
-    multiprocessing.Process(target=server.loop, args=()).start()
+    multiprocessing.Process(target=loop, args=()).start()
     app.run(debug=True, use_reloader=False, threaded=True)

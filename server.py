@@ -1,8 +1,8 @@
-import time
+import uuid
 import math
 import random
 import json
-import uuid
+import time
 
 currentGames = []
 addGame = None
@@ -23,12 +23,12 @@ class Game:
         self.match_on = False
 
         self.gridSize = (800, 400)
-        self.ballSpeed = self.gridSize[0]/2
-        self.pongBall = (self.gridSize[0]/2, self.gridSize[1]/2, self.ballSpeed, 0)
-        self.ballR = self.gridSize[0]/32
-        self.paddleSize = (self.gridSize[0]/80, self.gridSize[1]/4)
-        self.offset = self.gridSize[0]/80
-        self.playerPoses = [self.gridSize[1]/2, self.gridSize[1]/2]
+        self.ballSpeed = self.gridSize[0] / 2
+        self.pongBall = (self.gridSize[0] / 2, self.gridSize[1] / 2, self.ballSpeed, 0)
+        self.ballR = self.gridSize[0] / 32
+        self.paddleSize = (self.gridSize[0] / 80, self.gridSize[1] / 4)
+        self.offset = self.gridSize[0] / 80
+        self.playerPoses = [self.gridSize[1] / 2, self.gridSize[1] / 2]
         self.score = [0, 0]
 
     def join_player_2(self, plr):
@@ -65,10 +65,10 @@ class Game:
                 self.playerPoses[plrIndex] = float(newPos)
 
                 ret = {
-                    'otherPlrPos': self.playerPoses[1-plrIndex],
+                    'otherPlrPos': self.playerPoses[1 - plrIndex],
                     'ballTransform': self.pongBall,
                     'score': self.score,
-                    'time': round(self.time*10)/10
+                    'time': round(self.time * 10) / 10
                 }
 
                 return json.dumps(ret)
@@ -77,7 +77,7 @@ class Game:
                 return "not started"
 
     def endGame(self):
-        print("game ended: "+self.id)
+        print("game ended: " + self.id)
         currentGames.remove(self)
         del self
 
@@ -90,46 +90,50 @@ class Game:
         else:
             x, y = self.pongBall[0], self.pongBall[1]
             sX, sY = self.pongBall[2], self.pongBall[3]
-            x2 = x+sX*deltaTime
-            y2 = y+sY*deltaTime
+            x2 = x + sX * deltaTime
+            y2 = y + sY * deltaTime
 
-            if self.offset-self.paddleSize[0]/2-self.ballR <= x2 <= self.offset+self.ballR+self.paddleSize[0]/2 and self.playerPoses[0]-self.paddleSize[1]/2-self.ballR <= y2 <= self.playerPoses[0]+self.paddleSize[1]/2+self.ballR:
+            if self.offset - self.paddleSize[0] / 2 - self.ballR <= x2 <= self.offset + self.ballR + self.paddleSize[
+                0] / 2 and self.playerPoses[0] - self.paddleSize[1] / 2 - self.ballR <= y2 <= self.playerPoses[0] + \
+                    self.paddleSize[1] / 2 + self.ballR:
                 sX = -sX
-                degrees = math.atan2(sY, sX)/math.pi*180
-                degrees += random.randint(0, 30)-15
-                degrees = degrees*math.pi/180
-                sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
-            elif x2+self.ballR*2 < 0:
+                degrees = math.atan2(sY, sX) / math.pi * 180
+                degrees += random.randint(0, 30) - 15
+                degrees = degrees * math.pi / 180
+                sX, sY = math.cos(degrees) * self.ballSpeed, math.sin(degrees) * self.ballSpeed
+            elif x2 + self.ballR * 2 < 0:
                 x2 = 400
                 y2 = 200
                 sX = self.ballSpeed
                 sY = 0
                 self.score[0] += 1
-            if self.gridSize[0]-self.offset+self.paddleSize[0]/2+self.ballR >= x2 >= self.gridSize[0]-self.offset-self.ballR-self.paddleSize[0]/2 and self.playerPoses[1]-self.paddleSize[1]/2-self.ballR <= y2 <= self.playerPoses[1]+self.paddleSize[1]/2+self.ballR:
+            if self.gridSize[0] - self.offset + self.paddleSize[0] / 2 + self.ballR >= x2 >= self.gridSize[
+                0] - self.offset - self.ballR - self.paddleSize[0] / 2 and self.playerPoses[1] - self.paddleSize[
+                1] / 2 - self.ballR <= y2 <= self.playerPoses[1] + self.paddleSize[1] / 2 + self.ballR:
                 sX = -sX
-                degrees = math.atan2(sY, sX)/math.pi*180
-                degrees += random.randint(0, 30)-15
-                degrees = degrees*math.pi/180
-                sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
-            elif x2-self.ballR*2 > self.gridSize[0]:
+                degrees = math.atan2(sY, sX) / math.pi * 180
+                degrees += random.randint(0, 30) - 15
+                degrees = degrees * math.pi / 180
+                sX, sY = math.cos(degrees) * self.ballSpeed, math.sin(degrees) * self.ballSpeed
+            elif x2 - self.ballR * 2 > self.gridSize[0]:
                 x2 = 400
                 y2 = 200
                 sX = self.ballSpeed
                 sY = 0
                 self.score[1] += 1
 
-            if y2-self.ballR > self.gridSize[1]:
+            if y2 - self.ballR > self.gridSize[1]:
                 sY = -sY
-                degrees = math.atan2(sY, sX)/math.pi*180
-                degrees += random.randint(0, 30)-15
-                degrees = degrees*math.pi/180
-                sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
-            elif y2+self.ballR < 0:
+                degrees = math.atan2(sY, sX) / math.pi * 180
+                degrees += random.randint(0, 30) - 15
+                degrees = degrees * math.pi / 180
+                sX, sY = math.cos(degrees) * self.ballSpeed, math.sin(degrees) * self.ballSpeed
+            elif y2 + self.ballR < 0:
                 sY = -sY
-                degrees = math.atan2(sY, sX)/math.pi*180
-                degrees += random.randint(0, 30)-15
-                degrees = degrees*math.pi/180
-                sX, sY = math.cos(degrees)*self.ballSpeed, math.sin(degrees)*self.ballSpeed
+                degrees = math.atan2(sY, sX) / math.pi * 180
+                degrees += random.randint(0, 30) - 15
+                degrees = degrees * math.pi / 180
+                sX, sY = math.cos(degrees) * self.ballSpeed, math.sin(degrees) * self.ballSpeed
 
             self.pongBall = (x2, y2, sX, sY)
 
@@ -166,7 +170,6 @@ def loop():
     tps = 1
     print("loop started")
     while 1:
-        print("loop works")
         if addGame is not None:
             print(addGame)
             print(addGame.players)
@@ -180,3 +183,8 @@ def loop():
         deltaTime = time.time() - prevTime
         for game in currentGames:
             game.tick(deltaTime)
+
+
+def changeAddGame(uuid2, roomName):
+    global addGame
+    addGame = Game(uuid2, roomName)
