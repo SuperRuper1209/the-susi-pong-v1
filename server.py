@@ -216,4 +216,4 @@ def loopStart():
 
 if __name__ == "__main__":
     print("app run")
-    app.run(debug=True, use_reloader=False, threaded=True, port=80)
+    app.run(debug=True, use_reloader=False)
