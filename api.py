@@ -3,10 +3,6 @@ import time
 import flask
 import uuid
 import server
-from rq import Queue
-from worker import conn
-
-q = Queue(connection=conn)
 
 app = flask.Flask(__name__)
 
@@ -51,6 +47,8 @@ def before_start():
     q.enqueue(server.loop, ())
 
 
-if __name__ == "main":
-    print("app run")
-    app.run(debug=True, use_reloader=False, threaded=True)
+#if __name__ == "main":
+#    print("app run")
+#    app.run(debug=True, use_reloader=False, threaded=True)
+
+server.loop()
