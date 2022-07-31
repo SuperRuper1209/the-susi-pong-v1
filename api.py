@@ -40,12 +40,6 @@ def api():
     return "bruh, can you just not?"
 
 
-def runApp():
-    print("app run")
-    app.run(debug=True, use_reloader=False, threaded=True)
-
-
 if __name__ == "__main__":
-    multiprocessing.Process(target=runApp, args=()).start()
-
-server.loop()
+    multiprocessing.Process(target=server.loop, args=()).start()
+    app.run(debug=True, use_reloader=False, threaded=True)
