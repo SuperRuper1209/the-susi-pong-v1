@@ -5,7 +5,6 @@ import json
 import time
 
 currentGames = []
-addGame = None
 
 
 class Game:
@@ -165,19 +164,9 @@ def ping(uuid2, args):
 
 
 def loop():
-    global currentGames
-    global addGame
     tps = 1
     print("loop started")
     while 1:
-        if addGame is not None:
-            print(addGame)
-            print(addGame.players)
-            print(addGame.roomName)
-            currentGames.append(addGame)
-            print(currentGames)
-            addGame = None
-
         prevTime = time.time()
         time.sleep(1 / tps)
         deltaTime = time.time() - prevTime
@@ -185,6 +174,6 @@ def loop():
             game.tick(deltaTime)
 
 
-def changeAddGame(uuid2, roomName):
-    global addGame
-    addGame = Game(uuid2, roomName)
+def addGame(uuid2, roomName):
+    currentGames.append(Game(uuid2, roomName))
+    return uuid2

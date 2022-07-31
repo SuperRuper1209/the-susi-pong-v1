@@ -1,15 +1,11 @@
 import multiprocessing
 import flask
 import uuid
-import os
-import socket
-hostname=socket.gethostname()
-IPAddr=socket.gethostbyname(hostname)
-print(IPAddr)
-print(hostname)
+from rq import Queue
+from worker import conn
+import server
 
-print(os.environ)
-
+q = Queue(connection=conn)
 
 app = flask.Flask(__name__)
 
@@ -30,24 +26,27 @@ def api():
     if requestType == "newGame":
         if flask.request.args.get("roomName"):
             uuid2 = str(uuid.uuid4())
-            changeAddGame(uuid2, flask.request.args.get("roomName"))
-            return uuid2
+            return server.addGame(uuid2, flask.request.args.get("roomName"))
         else:
             return "no roomname specified, dirty cheater"
     elif requestType == "ping":
         if uuid2:
             print()
-            print(currentGames)
+            print(server.currentGames)
             print(uuid2)
             print(ip)
-            return ping(uuid2, flask.request.args)
+            return server.ping(uuid2, flask.request.args)
         else:
             return "stop hacking my game, is it so hard to???"
     elif requestType == "joinGame":
-        return joinGame(flask.request.args)
+        return server.joinGame(flask.request.args)
     return "bruh, can you just not?"
 
 
+@app.before_first_request
+def loop():
+    q.enqueue(server.loop)
+
+
 if __name__ == "__main__":
-    multiprocessing.Process(target=loop, args=()).start()
     app.run(debug=True, use_reloader=False, threaded=True)
