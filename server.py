@@ -167,17 +167,14 @@ def api():
             return "no roomname specified, dirty cheater"
     elif requestType == "ping":
         if uuid2:
-            for game in currentGames:
-                print()
-                print(game.players)
-                print(uuid2)
-                print(ip)
-                if game.players.count(uuid2) > 0:
-                    return game.ping(uuid2, dict(flask.request.args))
             print()
             print(currentGames)
             print(uuid2)
             print(ip)
+            for game in currentGames:
+                print(game.players)
+                if game.players.count(uuid2) > 0:
+                    return game.ping(uuid2, dict(flask.request.args))
             return "match ended"
         else:
             return "stop hacking my game, is it so hard to???"
