@@ -42,8 +42,10 @@ def api():
         return server.joinGame(flask.request.args)
     return "bruh, can you just not?"
 
+@app.before_first_request
+def before_start():
+    q.enqueue(server.loop, ())
 
 if __name__ == "main":
     print("app run")
-    q.enqueue(server.loop, ())
-    #app.run(debug=True, use_reloader=False, threaded=True)
+    app.run(debug=True, use_reloader=False, threaded=True)
