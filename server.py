@@ -174,6 +174,10 @@ def api():
                 print(ip)
                 if game.players.count(uuid2) > 0:
                     return game.ping(uuid2, dict(flask.request.args))
+            print()
+            print(currentGames)
+            print(uuid2)
+            print(ip)
             return "match ended"
         else:
             return "stop hacking my game, is it so hard to???"
