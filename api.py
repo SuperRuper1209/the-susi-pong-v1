@@ -43,4 +43,4 @@ def api():
 if __name__ == "__main__":
     print("app run")
     threading.Thread(target=server.loop, args=()).start()
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=False, threaded=True)
