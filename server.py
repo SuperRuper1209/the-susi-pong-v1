@@ -147,6 +147,7 @@ def loop():
     tps = 1
     print("loop started")
     while 1:
+        print("loop works")
         if addGame is not None:
             print(addGame)
             print(addGame.players)
