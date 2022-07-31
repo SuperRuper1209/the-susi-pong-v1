@@ -43,7 +43,6 @@ def api():
     return "bruh, can you just not?"
 
 
-if __name__ == "__main__":
-    print("app run")
-    q.enqueue(server.loop, ())
-    app.run(debug=True, use_reloader=False, threaded=True)
+print("app run")
+q.enqueue(server.loop, ())
+app.run(debug=True, use_reloader=False, threaded=True)
