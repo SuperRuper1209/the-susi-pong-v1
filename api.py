@@ -1,5 +1,4 @@
-import time
-
+import multiprocessing
 import flask
 import uuid
 import server
@@ -41,14 +40,12 @@ def api():
     return "bruh, can you just not?"
 
 
-@app.before_first_request
-def before_start():
-    time.sleep(15)
-    q.enqueue(server.loop, ())
+def runApp():
+    print("app run")
+    app.run(debug=True, use_reloader=False, threaded=True)
 
 
-#if __name__ == "main":
-#    print("app run")
-#    app.run(debug=True, use_reloader=False, threaded=True)
+if __name__ == "main":
+    multiprocessing.Process(target=runApp, args=()).start()
 
 server.loop()
