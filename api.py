@@ -45,7 +45,7 @@ def api():
 
 @app.before_first_request
 def loop():
-    q.enqueue(server.loop)
+    q.enqueue(server.loop, ())
 
 
 if __name__ == "__main__":
