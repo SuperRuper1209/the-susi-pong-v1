@@ -1,54 +1,36 @@
-import flask
-import uuid
+import json
+import time
+from fastapi import FastAPI
 import server
-from apscheduler.schedulers.blocking import BlockingScheduler
-import threading
 
 
-sched = BlockingScheduler()
+app = FastAPI()
 
 
-app = flask.Flask(__name__)
+@app.get("/ping-susi/")
+def api(requestType, uuid=None, roomName=None, additionalArgs=None):
+    if additionalArgs:
+        additionalArgs = json.loads(additionalArgs)
 
-
-@app.route('/')
-def index():
-    return flask.render_template('index.html')
-
-
-@app.route("/ping-susi/")
-def api():
-    uuid2 = flask.request.args.get("uuid")
-    requestType = flask.request.args.get("type")
-    if flask.request.headers.getlist("X-Forwarded-For"):
-        ip = flask.request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        ip = flask.request.remote_addr
     if requestType == "newGame":
-        if flask.request.args.get("roomName"):
+        if roomName:
             uuid2 = str(uuid.uuid4())
-            return server.addGame(uuid2, flask.request.args.get("roomName"))
+            return server.addGame(uuid2, roomName)
         else:
-            return "no roomname specified, dirty cheater"
+            return "no room name specified, dirty cheater"
     elif requestType == "ping":
-        if uuid2:
+        if uuid and additionalArgs:
             print()
             print(server.currentGames)
-            print(uuid2)
-            print(ip)
-            return server.ping(uuid2, flask.request.args)
+            print(uuid)
+            return server.ping(uuid, additionalArgs)
         else:
             return "stop hacking my game, is it so hard to???"
-    elif requestType == "joinGame":
-        return server.joinGame(flask.request.args)
+    elif requestType == "joinGame" and additionalArgs:
+        return server.joinGame(additionalArgs)
     return "bruh, can you just not?"
 
 
-@sched.scheduled_job('interval', seconds=1/server.tps)
-def loop():
+while 1:
+    time.sleep(1/server.tps)
     server.tick()
-
-
-if __name__ == "__main__":
-    threading.Thread(target=sched.start, args=()).start()
-    app.run(debug=True, use_reloader=False, threaded=True)

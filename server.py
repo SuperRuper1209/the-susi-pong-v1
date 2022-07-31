@@ -146,10 +146,10 @@ class Game:
 
 def joinGame(args):
     for game in currentGames:
-        if game.id == args.get("roomName"):
+        if game.id == args["roomName"]:
             if len(game.players) == 1:
                 uuid2 = str(uuid.uuid4())
-                tasks.append({"type": "joinGame", "game": game, "uuid": uuid2})
+                game.join_player_2(uuid2)
                 return uuid2
             else:
                 return "too much players"
@@ -159,7 +159,7 @@ def ping(uuid2, args):
     for game in currentGames:
         print(game.players)
         if game.players.count(uuid2) > 0:
-            return game.ping(uuid2, dict(args))
+            return game.ping(uuid2, args)
     return "match ended"
 
 
@@ -167,21 +167,12 @@ prevTime = time.time()
 
 
 tps = 1
-tasks = [
-    {"type": "addGame", "uuid": "dwadwa", "roomName": "dawdaw"}
-]
 
 
 def tick():
     global prevTime
     global currentGames
-
-    for task in tasks:
-        if task["type"] == "addGame":
-            currentGames.append(Game(task["uuid"], task["roomName"]))
-        elif task["type"] == "joinGame":
-            task["game"].join_player_2(task["uuid"])
-
+    print(currentGames)
     deltaTime = time.time() - prevTime
     for game in currentGames:
         game.tick(deltaTime)
@@ -189,5 +180,5 @@ def tick():
 
 
 def addGame(uuid2, roomName):
-    tasks.append({"type": "addGame", "uuid": uuid2, "roomName": roomName})
+    currentGames.append(Game(uuid2, roomName))
     return uuid2
