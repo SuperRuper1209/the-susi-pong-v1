@@ -1,5 +1,7 @@
 import flask
 import uuid
+import server
+import threading
 
 app = flask.Flask(__name__)
 
@@ -51,5 +53,5 @@ def api():
 
 if __name__ == "__main__":
     print("app run")
-    import server
+    threading.Thread(target=loop, args=()).start()
     app.run(debug=True, use_reloader=False)
