@@ -190,15 +190,18 @@ tps = 60
 
 
 def loop():
-    print("while loop")
     while 1:
         prevTime = time.time()
         time.sleep(1 / tps)
         deltaTime = time.time() - prevTime
         for game in currentGames:
             game.tick(deltaTime)
-    
 
-threading.Thread(target=loop, args=()).start()
+
+@app.before_first_request
+def loopStart():
+    threading.Thread(target=loop, args=()).start()
+
+
 print("app run")
-app.run(debug=True, use_reloader=False)
+app.run(debug=True, use_reloader=False, threaded=True)
