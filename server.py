@@ -2,9 +2,10 @@ import time
 import math
 import random
 import json
-import threading
+import uuid
 
 currentGames = []
+addGame = None
 
 
 class Game:
@@ -141,9 +142,15 @@ class Game:
 
 
 def loop():
+    global addGame
+    global currentGames
     tps = 1
     print("loop started")
     while 1:
+        if addGame is not None:
+            currentGames.append(addGame)
+            addGame = None
+
         print()
         print(currentGames)
         prevTime = time.time()
@@ -153,4 +160,20 @@ def loop():
             game.tick(deltaTime)
 
 
-threading.Thread(target=loop, args=()).start()
+def joinGame(args):
+    for game in currentGames:
+        if game.id == args.get("roomName"):
+            if len(game.players) == 1:
+                uuid2 = str(uuid.uuid4())
+                game.join_player_2(uuid2)
+                return uuid2
+            else:
+                return "too much players"
+
+
+def ping(uuid2, args):
+    for game in currentGames:
+        print(game.players)
+        if game.players.count(uuid2) > 0:
+            return game.ping(uuid2, dict(args))
+    return "match ended"

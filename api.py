@@ -22,7 +22,7 @@ def api():
     if requestType == "newGame":
         if flask.request.args.get("roomName"):
             uuid2 = str(uuid.uuid4())
-            server.currentGames.append(server.Game(uuid2, flask.request.args.get("roomName")))
+            server.addGame = server.Game(uuid2, flask.request.args.get("roomName"))
             return uuid2
         else:
             return "no roomname specified, dirty cheater"
@@ -32,26 +32,15 @@ def api():
             print(server.currentGames)
             print(uuid2)
             print(ip)
-            for game in server.currentGames:
-                print(game.players)
-                if game.players.count(uuid2) > 0:
-                    return game.ping(uuid2, dict(flask.request.args))
-            return "match ended"
+            return server.ping(uuid2, flask.request.args)
         else:
             return "stop hacking my game, is it so hard to???"
     elif requestType == "joinGame":
-        for game in server.currentGames:
-            if game.id == flask.request.args.get("roomName"):
-                if len(game.players) == 1:
-                    uuid2 = str(uuid.uuid4())
-                    game.join_player_2(uuid2)
-                    return uuid2
-                else:
-                    return "too much players"
+        return server.joinGame(flask.request.args)
     return "bruh, can you just not?"
 
 
 if __name__ == "__main__":
     print("app run")
-    threading.Thread(target=loop, args=()).start()
+    threading.Thread(target=server.loop, args=()).start()
     app.run(debug=True, use_reloader=False)
