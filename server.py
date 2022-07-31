@@ -197,6 +197,7 @@ tps = 60
 def loop():
     global tps
     global currentGames
+    print("loop started")
     while 1:
         prevTime = time.time()
         time.sleep(1 / tps)
@@ -210,6 +211,6 @@ def loopStart():
     threading.Thread(target=loop, args=()).start()
 
 
-print("app run")
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False, threaded=True)
+    print("app run")
+    app.run(debug=True, use_reloader=False, threaded=True, port=80)
