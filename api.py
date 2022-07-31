@@ -45,7 +45,7 @@ def runApp():
     app.run(debug=True, use_reloader=False, threaded=True)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     multiprocessing.Process(target=runApp, args=()).start()
 
 server.loop()
